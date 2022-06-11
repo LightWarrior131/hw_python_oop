@@ -87,18 +87,18 @@ class SportsWalking(Training):
         self.height = height
 
     def get_spent_calories(self) -> float:
-        spent_calories = (self.coeff_walk_calorie_1 * self.weight
-                          + (super().get_mean_speed() ** 2 // self.height)
-                          * self.coeff_walk_calorie_2 * self.weight) \
-                         * (self.duration * 60)
+        spent_calories = (self.coeff_walk_calorie_1 * self.weight +
+                          (super().get_mean_speed() ** 2 // self.height) *
+                          self.coeff_walk_calorie_2 * self.weight) * \
+                         (self.duration * 60)
         return spent_calories
 
 
 class Swimming(Training):
     """Тренировка: плавание."""
     LEN_STEP = 1.38
-    coeff_s_calorie_1 = 1.1
-    coeff_s_calorie_2 = 2
+    cof_s_calorie_1 = 1.1
+    cof_s_calorie_2 = 2
 
     def __init__(self, action: int,
                  duration: float,
@@ -111,13 +111,13 @@ class Swimming(Training):
 
     def get_mean_speed(self) -> float:
         """Получить среднюю скорость движения."""
-        get_mean_speed = self.length_pool * self.count_pool \
-                         / super().M_IN_KM / self.duration
+        get_mean_speed = self.length_pool * self.count_pool / \
+                         super().M_IN_KM / self.duration
         return get_mean_speed
 
     def get_spent_calories(self) -> float:
-        spent_calories = (Swimming.get_mean_speed(self) + self.coeff_s_calorie_1) \
-                         * self.coeff_s_calorie_2 * self.weight
+        spent_calories = (self.get_mean_speed() + self.cof_s_calorie_1) * \
+                         self.cof_s_calorie_2 * self.weight
         return spent_calories
 
 
@@ -137,7 +137,7 @@ def read_package(workout_type: str, data: list) -> Training:
             object_training = training_dictionary[workout_type](*data)
         if workout_type_dict == 'SWM':
             object_training = training_dictionary[workout_type](*data)
-        if training_dictionary.get(workout_type_dict) == None:
+        if training_dictionary.get(workout_type_dict) is None:
             print('Это неизвестная тренировка')
     return object_training
 
