@@ -51,8 +51,7 @@ class Training:
                                   'класса Training' %self.__class__.__name__)
 
     def show_training_info(self) -> InfoMessage:
-
-        """Вернуть информационное сообщение о выполненной тренировке."""
+        """Вернуть информационное сообщение о выполненной тренировке. """
         class_name = type(self).__name__
         message = InfoMessage(class_name, self.duration, self.get_distance(),
                               self.get_mean_speed(), self.get_spent_calories())
