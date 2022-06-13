@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 
+
 @dataclass
 class InfoMessage:
     training_type: str
@@ -8,14 +9,20 @@ class InfoMessage:
     speed: float
     calories: float
     message = ('Тип тренировки: {}; '
-                   'Длительность: {:0.3f} ч.; '
-                   'Дистанция: {:0.3f} км; '
-                   'Ср. скорость: {:0.3f} км/ч; '
-                   'Потрачено ккал: {:0.3f}.')
+                'Длительность: {:0.3f} ч.; '
+                'Дистанция: {:0.3f} км; '
+                'Ср. скорость: {:0.3f} км/ч; '
+                'Потрачено ккал: {:0.3f}.'
+               )
     """Информационное сообщение о тренировке."""
 
     def get_message(self) -> str:
-        message = self.message.format(self.training_type, self.duration, self.distance, self.speed, self.calories)
+        message = self.message.format(self.training_type,
+                                      self.duration,
+                                      self.distance,
+                                      self.speed,
+                                      self.calories
+                                      )
         return message
 
 
