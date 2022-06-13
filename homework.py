@@ -1,23 +1,32 @@
-class InfoMessage:
-    """Информационное сообщение о тренировке."""
+from dataclasses import dataclass
 
-    def __init__(self, training_type: str,
-                 duration: float,
-                 distance: float,
-                 speed: float,
-                 calories: float) -> None:
-        self.training_type = training_type
-        self.duration = '%.3f' % duration
-        self.distance = '%.3f' % distance
-        self.speed = '%.3f' % speed
-        self.calories = '%.3f' % calories
+@dataclass
+class InfoMessage:
+    training_type: str
+    duration: float
+    distance: float
+    speed: float
+    calories: float
+    """Информационное сообщение о тренировке."""
+    # Натан, не понимаю по твоему комментарию, как вынести переменную в строку.
+    # У меня тогда не получается обрезать в функции значения  до трех знаков после запятой.
+    #message = ('Тип тренировки: {}; '
+    #               'Длительность: {} ч.; '
+    #               'Дистанция: {} км; '
+    #               'Ср. скорость: {} км/ч; '
+    #               'Потрачено ккал: {}.')
 
     def get_message(self) -> str:
+       # Вот так подстановка значений в перменную  класса у меня работает, но без обрезания:
+       # message = self.message.format(self.training_type, self.duration, self.distance, self.speed, self.calories)
+       # но как только пытаюсь добавить сюда попытку обрезать до трех знаков, ничего не получается.
+       # как только не пробовал, но ничего не выходит толкового, к сожалению.
+       # я все-таки хочу в самом проекте оставить форматирование в рамках f'функции потому что хотя бы понимаю, как его написать.
         message = (f'Тип тренировки: {self.training_type}; '
-                   f'Длительность: {self.duration} ч.; '
-                   f'Дистанция: {self.distance} км; '
-                   f'Ср. скорость: {self.speed} км/ч; '
-                   f'Потрачено ккал: {self.calories}.')
+                   f'Длительность: {self.duration: 0.3f} ч.; '
+                   f'Дистанция: {self.distance: 0.3f} км; '
+                   f'Ср. скорость: {self.speed: 0.3f} км/ч; '
+                   f'Потрачено ккал: {self.calories: 0.3f}.')
         return message
 
 
@@ -25,6 +34,7 @@ class Training:
     """Базовый класс тренировки."""
     LEN_STEP = 0.65
     M_IN_KM = 1000
+    M_IN_H = 60
 
     def __init__(self,
                  action: int,
@@ -48,7 +58,8 @@ class Training:
 
     def get_spent_calories(self) -> float:
         """Получить количество затраченных калорий."""
-        pass
+        raise NotImplementedError('Нужно задать метод в подклассе'
+                                  'класса Training' %self.__class__.__name__)
 
     def show_training_info(self) -> InfoMessage:
         """Вернуть информационное сообщение о выполненной тренировке."""
@@ -70,7 +81,7 @@ class Running(Training):
         spent_calories = ((self.coeff_calorie_1 * self.get_mean_speed()
                            - self.coeff_calorie_2)
                           * self.weight / super().M_IN_KM
-                          * (self.duration * 60)
+                          * (self.duration * super().M_IN_H)
                           )
         return spent_calories
 
@@ -92,7 +103,7 @@ class SportsWalking(Training):
         spent_calories = ((self.coeff_walk_calorie_1 * self.weight
                            + (super().get_mean_speed() ** 2 // self.height)
                            * self.coeff_walk_calorie_2 * self.weight)
-                          * (self.duration * 60)
+                          * (self.duration * super().M_IN_H)
                           )
         return spent_calories
 
@@ -136,14 +147,10 @@ def read_package(workout_type: str, data: list) -> Training:
     }
 
     for workout_type_dict in training_dictionary:
-        if workout_type_dict == 'RUN':
-            object_training = training_dictionary[workout_type](*data)
-        if workout_type_dict == 'WLK':
-            object_training = training_dictionary[workout_type](*data)
-        if workout_type_dict == 'SWM':
-            object_training = training_dictionary[workout_type](*data)
-        if training_dictionary.get(workout_type_dict) is None:
+        if workout_type_dict not in training_dictionary:
             print('Это неизвестная тренировка')
+        else:
+            object_training = training_dictionary[workout_type](*data)
     return object_training
 
 
