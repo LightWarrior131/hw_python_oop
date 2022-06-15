@@ -142,11 +142,10 @@ def read_package(workout_type: str, data: list) -> Training:
         'SWM': Swimming
     }
 
-    for workout_type_dict in training_dictionary:
-        if workout_type_dict not in training_dictionary:
-            print('Это неизвестная тренировка')
-        else:
-            object_training = training_dictionary[workout_type](*data)
+    if workout_type not in training_dictionary:
+        raise ValueError('Это неизвестная тренировка')
+    else:
+        object_training = training_dictionary[workout_type](*data)
     return object_training
 
 
